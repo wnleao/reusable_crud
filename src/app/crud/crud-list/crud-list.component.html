@@ -1,1 +1,43 @@
-<p>crud-list works!</p>
+<div class="card mt-3">
+    <div class="card-header">
+      <div class="float-left">
+        <h4>{{ service.title }}</h4>
+      </div>
+      <div class="float-right">
+        <button type="button" class="btn btn-primary">New</button>
+        <button type="button" class="btn btn-secondary">Refresh</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <table class="table table-hover" *ngIf="items$ | async as items; else loading" >
+        <thead>
+          <tr>
+            <th *ngFor="let kv of items[0] | keyvalue: originalOrder">{{ kv.key }}</th>  
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- https://angular.io/api/common/KeyValuePipe -->
+          <tr *ngFor="let item of items">
+            <td *ngFor="let kv of item  | keyvalue: originalOrder">{{ kv.value }}</td>  
+            <td>
+              <span class="float-right">
+                <button class="btn btn-outline-warning mb-1 btn-sm">
+                  Update
+                </button>
+  
+                <button class="btn btn-outline-danger mb-1 btn-sm">
+                  Delete
+                </button>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <ng-template #loading>
+        <span>Loading items...</span>
+      </ng-template>
+  
+    </div>
+  </div>
