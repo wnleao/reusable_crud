@@ -1,10 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { ModalModule } from 'ngx-bootstrap/modal'; 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { STUDENTS_CRUD, COURSES_CRUD, STUDENTS_PATH, COURSES_PATH } from './cruds.service';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,9 @@ import { STUDENTS_CRUD, COURSES_CRUD, STUDENTS_PATH, COURSES_PATH } from './crud
   imports: [
     HttpClientModule,
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ModalModule.forRoot(),
+    SharedModule
   ],
   // https://stackoverflow.com/questions/41471164/angular-2-get-service-by-string-name
   // https://angular.io/guide/dependency-injection-providers

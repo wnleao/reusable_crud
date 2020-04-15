@@ -1,5 +1,8 @@
 import { Component, OnInit, Injector } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { EMPTY } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { AlertModalService } from '../../shared/alert-modal.service';
 
 @Component({
   selector: 'app-crud-list',
@@ -18,6 +21,7 @@ export class CrudListComponent implements OnInit {
   constructor(
     private injector: Injector,
     private route: ActivatedRoute,
+    private alertService: AlertModalService,
   ) { 
     this.serviceName = route.snapshot.parent.url[0].path;
     this.crudConfig = injector.get(this.serviceName); 
@@ -26,7 +30,16 @@ export class CrudListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.items$ = this.service.list();
+    this.onRefresh();
+  }
+
+  onRefresh() {
+    this.items$ = this.service.list().pipe(
+      catchError(error => {
+        this.handleError(error.message);
+        return EMPTY;
+      })
+    )
   }
 
   // https://stackoverflow.com/questions/52793944/angular-keyvalue-pipe-sort-properties-iterate-in-order
@@ -36,6 +49,10 @@ export class CrudListComponent implements OnInit {
 
   objectKeys(obj) {
     return Object.keys(obj);
+  }
+
+  handleError(message) {
+    this.alertService.showAlertDanger(message);
   }
 
 }
