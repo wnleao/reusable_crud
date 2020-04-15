@@ -1,20 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { COURSES_CRUD, STUDENTS_CRUD } from './cruds.service';
-
-const importCrudModule = () => import('./crud/crud.module').then(m => m.CrudModule);
+import { ROUTE_PATHS } from './cruds.service';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: COURSES_CRUD.route_path },
-  { 
-    path: COURSES_CRUD.route_path,
-    loadChildren: importCrudModule
-  },
-  { 
-    path: STUDENTS_CRUD.route_path,
-    loadChildren: importCrudModule
-  },
+  { path: '', pathMatch: 'full', redirectTo: ROUTE_PATHS[0] }
 ];
+
+const importCrudModule = () => import('./crud/crud.module').then(m => m.CrudModule);
+ROUTE_PATHS.forEach(crud_path => routes.push({ path: crud_path, loadChildren: importCrudModule }));
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
