@@ -10,9 +10,7 @@ export class CrudService<T> {
     }
   
     list() {
-      return this.http.get<T[]>(this.API_URL).pipe(
-        tap(console.log)
-      )
+      return this.http.get<T[]>(this.API_URL);
     }
   
     update(record: T) {

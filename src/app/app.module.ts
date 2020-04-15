@@ -3,9 +3,8 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { StudentsService } from './students/students.service';
 import { HttpClientModule } from '@angular/common/http';
-import { CoursesService } from './courses/courses.service';
+import { STUDENTS_CRUD, COURSES_CRUD } from './cruds.service';
 
 @NgModule({
   declarations: [
@@ -16,9 +15,11 @@ import { CoursesService } from './courses/courses.service';
     BrowserModule,
     AppRoutingModule
   ],
+  // https://stackoverflow.com/questions/41471164/angular-2-get-service-by-string-name
+  // https://angular.io/guide/dependency-injection-providers
   providers: [
-    {provide: 'students', useExisting: StudentsService },
-    {provide: 'courses', useExisting: CoursesService }
+    { provide: STUDENTS_CRUD.route_path, useValue: STUDENTS_CRUD },
+    { provide: COURSES_CRUD.route_path, useValue: COURSES_CRUD }
   ],
   bootstrap: [AppComponent]
 })

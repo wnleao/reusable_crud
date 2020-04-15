@@ -8,19 +8,21 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class CrudListComponent implements OnInit {
 
-  items$;
   serviceName;
+  crudConfig;
   service;
+
+  items$;
+  title;
 
   constructor(
     private injector: Injector,
     private route: ActivatedRoute,
   ) { 
     this.serviceName = route.snapshot.parent.url[0].path;
-    this.service = injector.get(this.serviceName);
-
-    console.log(this.serviceName);
-    console.log(this.service);
+    this.crudConfig = injector.get(this.serviceName); 
+    this.service = injector.get(this.crudConfig.service);
+    this.title = this.crudConfig.title;
   }
 
   ngOnInit(): void {
