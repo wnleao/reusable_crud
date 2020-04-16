@@ -4,14 +4,14 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-crud-form',
-  templateUrl: './crud-form.component.html',
-  styleUrls: ['./crud-form.component.css']
+  selector: 'app-crud-compiled-form',
+  templateUrl: './crud-compiled-form.component.html',
+  styleUrls: ['./crud-compiled-form.component.css']
 })
 
-export class CrudFormComponent implements OnInit {
+export class CrudCompiledFormComponent implements OnInit {
 
-  @ViewChild('vc', {read: ViewContainerRef}) vc: ViewContainerRef;
+  @ViewChild('contentPlaceHolder', {read: ViewContainerRef}) placeHolder: ViewContainerRef;
 
   form: FormGroup;
   serviceName;
@@ -112,7 +112,7 @@ export class CrudFormComponent implements OnInit {
         console.log(f);
         const cmp = f.create(this.injector, [], null, m);
         console.log(cmp);
-        this.vc.insert(cmp.hostView);
+        this.placeHolder.insert(cmp.hostView);
       });
   }
 
