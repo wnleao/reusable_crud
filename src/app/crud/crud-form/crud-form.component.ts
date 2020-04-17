@@ -1,127 +1,68 @@
-import { Component, OnInit, Injector, NgModule, Compiler, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit, Injector, Compiler } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  FormControl,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { of } from 'rxjs';
+import { FormElement, FormElementTag } from './dynamic-form-element/form-element';
 
+// https://angular.io/guide/dynamic-form
 @Component({
   selector: 'app-crud-form',
   templateUrl: './crud-form.component.html',
-  styleUrls: ['./crud-form.component.css']
+  styleUrls: ['./crud-form.component.css'],
 })
-
 export class CrudFormComponent implements OnInit {
-
-  @ViewChild('vc', {read: ViewContainerRef}) vc: ViewContainerRef;
-
   form: FormGroup;
   serviceName;
   crudConfig;
   service;
   formContent;
 
+  formElements;
+  payLoad = '';
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private injector: Injector,
-    protected compiler: Compiler,
-  ) { 
+    protected compiler: Compiler
+  ) {
     this.serviceName = route.snapshot.parent.url[0].path;
-    this.crudConfig = injector.get(this.serviceName); 
+    this.crudConfig = injector.get(this.serviceName);
     this.service = injector.get(this.crudConfig.service);
   }
 
   ngOnInit(): void {
-  }
-
-  ngAfterViewInit(): void {
-
+    let group: any = {};
 
     const item = this.route.snapshot.data.item;
+    this.formElements = this.crudConfig.formElements.sort((a, b) => a.order - b.order);
 
-    let group = {};
-    if (item) {
-      console.log(item);
-      console.log(Object.keys(item));
-      for (let key of Object.keys(item)) {
-        console.log(key);
-        group[key] = item[key];
-      }  
-    } else {
-      group = {
-        id: [null],
-        name: [null],
-      };
-    }
-  
-    let rawFormContent = `
-    <form class="needs-validation" novalidate [formGroup]="form">
-    <div>
-      <div class="form-row">
-        <div class="col-sm-12">
-          <label for="name">Name</label>
-          <input
-            type="text"
-            class="form-control"
-            id="name"
-            placeholder="Name"
-            formControlName="name"
-            value=""
-          />
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary" (click)="onSubmit()">Salvar</button>
-      <button type="button" class="btn btn-default" (click)="onCancel()">Cancelar</button>
-    </div>
-  </form>
-    `
-    let Outer = this;
+    console.log(this.formElements);
 
-    const tmpCmp = Component({template: rawFormContent})(class {
-     
-      form: FormGroup;
+    group['id'] = item ? item['id'] : null;
 
-      constructor() { }
-
-      ngOnInit() {
-        console.log(group);
-        this.form = Outer.fb.group(group);
-      }
-
-      onSubmit() {
-        Outer.onSubmit();
-      }
-
-      onCancel() {
-        Outer.onCancel();
-      }
-      
+    this.formElements.forEach((element) => {
+      element['value'] = item ? item[element.key] : null;
+      group[element.key] = element.required
+        ? new FormControl(element.value || '', Validators.required)
+        : new FormControl(element.value || '');
     });
-    
-    @NgModule({
-      declarations: [tmpCmp],
-      entryComponents: [tmpCmp],
-      imports: [CommonModule, ReactiveFormsModule],
-    })
-    class AdHocModule {}
 
-    this.compiler.compileModuleAndAllComponentsAsync(AdHocModule).then(
-      factories => {
-        const m = factories.ngModuleFactory.create(this.injector);
-        const f = factories.componentFactories[0];
-        console.log(factories.componentFactories.length)
-        console.log(f);
-        const cmp = f.create(this.injector, [], null, m);
-        console.log(cmp);
-        this.vc.insert(cmp.hostView);
-      });
+    this.form = this.fb.group(group);
   }
 
   onSubmit() {
-    console.log("on submit...");
+    console.log('on submit...');
   }
 
   onCancel() {
-    console.log("on cancel...");
+    console.log('on cancel...');
   }
 
 }

@@ -13,6 +13,11 @@ const routes: Routes = [
     resolve: { item: ItemResolverGuard },
   },
   {
+    path: 'edit/:id',
+    component: CrudFormComponent,
+    resolve: { item: ItemResolverGuard },
+  },
+  {
     path: 'editc/:id',
     component: CrudCompiledFormComponent,
     resolve: { item: ItemResolverGuard },

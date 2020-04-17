@@ -1,1 +1,17 @@
-<div #vc></div>
+<div>
+    <form (ngSubmit)="onSubmit()" [formGroup]="form">
+  
+      <div *ngFor="let element of formElements" class="form-row">
+        <app-dynamic-form-element [formElement]="element" [form]="form"></app-dynamic-form-element>
+      </div>
+  
+      <div class="form-row">
+        <button type="submit" [disabled]="!form.valid">Save</button>
+      </div>
+
+    </form>
+  
+    <div *ngIf="payLoad" class="form-row">
+      <strong>Saved the following values</strong><br>{{payLoad}}
+    </div>
+  </div>

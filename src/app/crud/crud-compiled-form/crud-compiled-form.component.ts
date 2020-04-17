@@ -76,7 +76,7 @@ export class CrudCompiledFormComponent implements OnInit {
     `
     let Outer = this;
 
-    const tmpCmp = Component({template: rawFormContent})(class {
+    let tmpCmp = Component({template: rawFormContent})(class {
      
       form: FormGroup;
 
@@ -98,8 +98,8 @@ export class CrudCompiledFormComponent implements OnInit {
     });
     
     @NgModule({
-      declarations: [tmpCmp],
-      entryComponents: [tmpCmp],
+      // declarations: [tmpCmp],
+      // entryComponents: [tmpCmp],
       imports: [CommonModule, ReactiveFormsModule],
     })
     class AdHocModule {}
